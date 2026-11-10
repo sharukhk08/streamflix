@@ -12,7 +12,7 @@ Copy `.env.example` to `.env.local` and set `DEMO_MODE=true` and `NEXT_PUBLIC_DE
 ## Deploy (Vercel)
 1. Push this folder to a private GitHub repository.
 2. Import it in Vercel (framework: Next.js).
-3. Add these environment variables:
+3. No settings are needed: with no Supabase address configured, the app runs in demo mode automatically. (Optional) Add these to be explicit:
    - `DEMO_MODE=true`
    - `NEXT_PUBLIC_DEMO_MODE=true`
    - `NEXT_PUBLIC_SUPABASE_URL=https://demo.supabase.co` (any placeholder in demo mode)

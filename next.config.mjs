@@ -27,9 +27,18 @@ const securityHeaders =
     ? [{ key: "Content-Security-Policy", value: csp }, ...baseHeaders]
     : baseHeaders;
 
+// Demo mode is on when DEMO_MODE=true OR when no Supabase project is configured,
+// so the repo deploys with zero settings. Set a Supabase URL (and DEMO_MODE=false) for real mode.
+const demoMode =
+  process.env.DEMO_MODE === "true" || !process.env.NEXT_PUBLIC_SUPABASE_URL;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  env: {
+    DEMO_MODE: demoMode ? "true" : "false",
+    NEXT_PUBLIC_DEMO_MODE: demoMode ? "true" : "false",
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
