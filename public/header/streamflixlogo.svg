@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 48" width="310" height="48" role="img" aria-label="StreamFlix">
+  <rect x="2" y="6" width="36" height="36" rx="9" fill="#00FF99"/>
+  <path d="M15 15 L30 24 L15 33 Z" fill="#0a0a0a"/>
+  <text x="48" y="34" font-family="Inter, Helvetica, Arial, sans-serif" font-weight="800" font-size="28" letter-spacing="2.5" fill="#FFFFFF">STREAM<tspan fill="#00FF99">FLIX</tspan></text>
+</svg>

@@ -1,0 +1,129 @@
+| table_name          | column_name           | data_type                   | is_nullable | column_default                               |
+| ------------------- | --------------------- | --------------------------- | ----------- | -------------------------------------------- |
+| actors              | actor_id              | uuid                        | NO          | uuid_generate_v4()                           |
+| actors              | name                  | character varying           | NO          |                                              |
+| actors              | bio                   | text                        | YES         |                                              |
+| actors              | birth_date            | date                        | YES         |                                              |
+| actors              | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| actors              | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| categories          | category_id           | uuid                        | NO          | uuid_generate_v4()                           |
+| categories          | category_name         | character varying           | NO          |                                              |
+| categories          | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| categories          | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| collection          | collection_id         | uuid                        | NO          | uuid_generate_v4()                           |
+| collection          | collection_name       | character varying           | NO          |                                              |
+| collection          | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| collection          | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content             | content_id            | uuid                        | NO          | uuid_generate_v4()                           |
+| content             | title                 | character varying           | NO          |                                              |
+| content             | description           | text                        | YES         |                                              |
+| content             | release_date          | date                        | YES         |                                              |
+| content             | duration              | integer                     | YES         |                                              |
+| content             | studio_id             | uuid                        | YES         |                                              |
+| content             | approved              | boolean                     | YES         | false                                        |
+| content             | language              | character varying           | YES         |                                              |
+| content             | country               | character varying           | YES         |                                              |
+| content             | maturity_rating       | integer                     | YES         |                                              |
+| content             | image_url             | character varying           | YES         |                                              |
+| content             | video_id              | character varying           | YES         |                                              |
+| content             | type                  | character varying           | YES         |                                              |
+| content             | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content             | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content             | is_featured           | boolean                     | YES         | false                                        |
+| content_cast        | content_id            | uuid                        | NO          |                                              |
+| content_cast        | actors_id             | uuid                        | NO          |                                              |
+| content_cast        | role_name             | character varying           | YES         |                                              |
+| content_cast        | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content_cast        | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content_categories  | content_id            | uuid                        | NO          |                                              |
+| content_categories  | category_id           | uuid                        | NO          |                                              |
+| content_categories  | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content_categories  | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content_collection  | content_id            | uuid                        | NO          |                                              |
+| content_collection  | collection_id         | uuid                        | NO          |                                              |
+| content_collection  | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content_collection  | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content_directors   | content_id            | uuid                        | NO          |                                              |
+| content_directors   | director_id           | uuid                        | NO          |                                              |
+| content_directors   | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| content_directors   | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| continue_watching   | continue_id           | uuid                        | NO          | uuid_generate_v4()                           |
+| continue_watching   | profile_id            | uuid                        | YES         |                                              |
+| continue_watching   | content_id            | uuid                        | YES         |                                              |
+| continue_watching   | episode_id            | text                        | YES         |                                              |
+| continue_watching   | last_watched_at       | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| continue_watching   | last_watched_duration | real                        | YES         |                                              |
+| directors           | director_id           | uuid                        | NO          | uuid_generate_v4()                           |
+| directors           | name                  | character varying           | NO          |                                              |
+| directors           | bio                   | text                        | YES         |                                              |
+| directors           | birth_date            | date                        | YES         |                                              |
+| directors           | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| directors           | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| episodes            | episode_id            | uuid                        | NO          | uuid_generate_v4()                           |
+| episodes            | content_id            | uuid                        | NO          |                                              |
+| episodes            | season_number         | integer                     | NO          |                                              |
+| episodes            | episode_number        | integer                     | NO          |                                              |
+| episodes            | title                 | character varying           | NO          |                                              |
+| episodes            | description           | text                        | YES         |                                              |
+| episodes            | release_date          | date                        | YES         |                                              |
+| episodes            | duration              | integer                     | YES         |                                              |
+| episodes            | image_url             | character varying           | YES         |                                              |
+| episodes            | video_id              | character varying           | YES         |                                              |
+| episodes            | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| episodes            | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| episodes            | intro_marker          | text                        | YES         |                                              |
+| episodes            | outro_marker          | text                        | YES         |                                              |
+| notifications       | notification_id       | uuid                        | NO          | uuid_generate_v4()                           |
+| notifications       | profile_id            | uuid                        | YES         |                                              |
+| notifications       | message               | text                        | NO          |                                              |
+| notifications       | read                  | boolean                     | YES         | false                                        |
+| notifications       | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| profile_preferences | preference_id         | uuid                        | NO          | uuid_generate_v4()                           |
+| profile_preferences | profile_id            | uuid                        | YES         |                                              |
+| profile_preferences | preference_type       | character varying           | YES         |                                              |
+| profile_preferences | preference_value      | character varying           | YES         |                                              |
+| profiles            | profile_id            | uuid                        | NO          | uuid_generate_v4()                           |
+| profiles            | user_id               | uuid                        | YES         |                                              |
+| profiles            | profile_name          | character varying           | NO          |                                              |
+| profiles            | profile_image         | text                        | YES         |                                              |
+| profiles            | is_kid                | boolean                     | YES         |                                              |
+| profiles            | language              | text                        | YES         |                                              |
+| profiles            | maturity_level        | text                        | YES         |                                              |
+| profiles            | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| profiles            | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| recommendations     | recommendation_id     | uuid                        | NO          | uuid_generate_v4()                           |
+| recommendations     | profile_id            | uuid                        | YES         |                                              |
+| recommendations     | film_id               | uuid                        | YES         |                                              |
+| recommendations     | recommended_at        | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| reviews             | review_id             | uuid                        | NO          | uuid_generate_v4()                           |
+| reviews             | film_id               | uuid                        | YES         |                                              |
+| reviews             | profile_id            | uuid                        | YES         |                                              |
+| reviews             | rating                | integer                     | YES         |                                              |
+| reviews             | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| roles               | role_id               | uuid                        | NO          | uuid_generate_v4()                           |
+| roles               | role_name             | character varying           | NO          |                                              |
+| social_interactions | interaction_id        | uuid                        | NO          | uuid_generate_v4()                           |
+| social_interactions | profile_id            | uuid                        | YES         |                                              |
+| social_interactions | film_id               | uuid                        | YES         |                                              |
+| social_interactions | interaction_type      | character varying           | YES         |                                              |
+| social_interactions | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| studios             | studio_id             | uuid                        | NO          | uuid_generate_v4()                           |
+| studios             | studio_name           | character varying           | NO          |                                              |
+| studios             | description           | text                        | YES         |                                              |
+| studios             | contact_email         | character varying           | YES         |                                              |
+| studios             | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| studios             | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| users               | user_id               | uuid                        | NO          | uuid_generate_v4()                           |
+| users               | fullname              | character varying           | NO          | ''::character varying                        |
+| users               | created_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| users               | updated_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| users               | role_id               | uuid                        | YES         | '35a31c65-4c72-4ea4-9ccd-b6dfd382f75d'::uuid |
+| viewing_history     | history_id            | uuid                        | NO          | uuid_generate_v4()                           |
+| viewing_history     | profile_id            | uuid                        | YES         |                                              |
+| viewing_history     | film_id               | uuid                        | YES         |                                              |
+| viewing_history     | started_at            | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
+| viewing_history     | ended_at              | timestamp without time zone | YES         |                                              |
+| watchlists          | watchlist_id          | uuid                        | NO          | uuid_generate_v4()                           |
+| watchlists          | profile_id            | uuid                        | YES         |                                              |
+| watchlists          | content_id            | uuid                        | YES         |                                              |
+| watchlists          | added_at              | timestamp without time zone | YES         | CURRENT_TIMESTAMP                            |
