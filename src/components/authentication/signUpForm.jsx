@@ -1,212 +1,62 @@
-// components/authentication/signUpForm.jsx
 "use client";
-//library
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { BsExclamationCircle } from "react-icons/bs";
-
-//logic
+import { FiMail, FiLock, FiUser } from "react-icons/fi";
 import { signup } from "../../api/authentication/signup";
+import { Heading, Alert, Field, PasswordField, SubmitButton, StrengthMeter, isEmail, passwordChecks, IS_DEMO } from "./ui";
 
-//components
-import Notification from "../notification/notification";
-
-const SignUpForm = () => {
+export default function SignUpForm() {
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [acceptPolicy, setAcceptPolicy] = useState(false);
-  const [notification, setNotification] = useState(null); 
-  const [inputError, setInputError] = useState(false); // New state for input error
+  const [accept, setAccept] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = {
-      email,
-      password,
-      displayName,
-    };
-
-    if (!acceptPolicy) {
-      setNotification({
-        type: "error",
-        message: "You must accept the communication policies.",
-      });
-      return;
-    }
-
+    const next = {};
+    if (displayName.trim().length < 2) next.displayName = "Enter your name (at least 2 characters).";
+    if (!isEmail(email)) next.email = "Enter a valid email address.";
+    if (passwordChecks(password).score < 2 || password.length < 8) next.password = "Use at least 8 characters with letters and a number.";
+    if (!accept) next.accept = "Please accept the Terms and Privacy Policy to continue.";
+    setErrors(next);
+    setFormError("");
+    if (Object.keys(next).length) return;
+    setLoading(true);
     try {
-      await signup(formData);
-      setEmail("");
-      setPassword(""); // Clear password on successful submission
-      setDisplayName("");
-      setAcceptPolicy(false);
-      setInputError(false); // Reset input error on successful submission
-      setNotification({
-        type: "success",
-        message: "Registration successful!",
-      });
-    } catch (error) {
-      setInputError(true); // Set input error on failure
-      setNotification({ type: "error", message: error.message });
+      await signup({ email: email.trim(), password, displayName: displayName.trim() });
+    } catch (err) {
+      setFormError(err?.message || "We could not create your account. Please try again.");
+      setLoading(false);
     }
-  };
-
-  // New effect to clear notification after a few seconds
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => {
-        setNotification(null);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
-
-  const handleCloseNotification = () => {
-    setNotification((prev) => ({
-      ...prev,
-      hide: true,
-    }));
-    setTimeout(() => setNotification(null), 500);
   };
 
   return (
-    <div className="w-full lg:w-full flex flex-col items-center gap-[10px]">
-      <h1
-        className="text-[36px] font-extrabold px-8 relative"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(86, 72, 251, 1) 0%, rgba(0, 255, 153, 1) 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}>
-        Welcome!
-      </h1>
-      <p className="text-white font-semibold leading-snug text-xl -mt-2">
-        Join the Streaming Paradise!
-      </p>
-
-      {notification && (
-        <Notification
-          type={notification.type}
-          message={notification.message}
-          onClose={handleCloseNotification}
-          className={notification.hide ? "hide" : ""}
-        />
-      )}
-
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-[10px] my-[12px]">
-        <input
-          className={`w-[328px] h-[50px] rounded-[10px] px-[5px] bg-zinc-900 text-[16px] text-white outline-none pl-[14px] ${inputError ? 'border-2 border-red-500' : ''}`} // Change border color on error
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            if (inputError) {
-              setInputError(false); // Reset input error on change
-              setPassword(""); // Clear password field
-            }
-          }}
-        />
-        <input
-          className={`w-[328px] h-[50px] rounded-[10px] px-[5px] bg-zinc-900 text-[16px] text-white outline-none pl-[14px] ${inputError ? 'border-2 border-red-500' : ''}`} // Change border color on error
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            if (inputError) {
-              setInputError(false); // Reset input error on change
-              setEmail(""); // Clear email field
-            }
-          }}
-        />
-        <input
-          className={`w-full h-[50px] rounded-[10px] px-[5px] bg-zinc-900 text-[16px] text-white outline-none pl-[14px] ${inputError ? 'border-2 border-red-500' : ''}`} // Change border color on error
-          type="text"
-          placeholder="Full name"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-
-        <div className="flex items-center gap-[17px] w-[328px] h-[46px] px-1">
+    <>
+      <Heading title="Create your account" subtitle="Free to join. Start discovering films in a minute." />
+      {IS_DEMO && <Alert type="info">Demo mode: no real account is created, you will go straight to profile setup.</Alert>}
+      {formError && <Alert type="error">{formError}</Alert>}
+      <form onSubmit={handleSubmit} noValidate>
+        <Field id="name" label="Full name" icon={<FiUser />} autoComplete="name" placeholder="Your name" value={displayName} onChange={(e) => setDisplayName(e.target.value)} error={errors.displayName} />
+        <Field id="email" label="Email" icon={<FiMail />} type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} />
+        <PasswordField id="password" label="Password" icon={<FiLock />} autoComplete="new-password" placeholder="Create a password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} />
+        <StrengthMeter password={password} />
+        <label className="flex cursor-pointer items-start gap-3 text-sm text-zinc-400">
+          <input type="checkbox" checked={accept} onChange={(e) => setAccept(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#00FF99]" />
           <span>
-            <BsExclamationCircle className="text-xl text-[#5A5A5A]" />
+            I agree to the <Link href="/terms-of-service" className="text-[#00FF99] hover:underline">Terms of Service</Link> and{" "}
+            <Link href="/privacy-policy" className="text-[#00FF99] hover:underline">Privacy Policy</Link>.
           </span>
-          <label htmlFor="terms" className="text-[#5A5A5A] text-base">
-            By signing up, you agree to StreamFlix’s <br />
-            <span className="text-[#757575] border-b">
-              <Link href="/terms-of-service">Terms of Service</Link>
-            </span>{" "}
-            and{" "}
-            <span className="text-[#757575] border-b">
-              <Link href="/privacy-policy">Privacy Policy</Link>
-            </span>
-          </label>
-        </div>
-
-        <div className="flex items-center gap-[17px] w-[328px] h-[43px] px-1">
-          <input
-            className="appearance-none w-[15px] h-[15px] rounded-full border-2 border-[#5A5A5A] checked:bg-[#00FF99] checked:border-[#00FF99] transition-all duration-200 cursor-pointer"
-            type="checkbox"
-            id="policy"
-            checked={acceptPolicy}
-            onChange={(e) => setAcceptPolicy(e.target.checked)}
-          />
-          <label htmlFor="policy" className="text-[#5A5A5A] text-base cursor-pointer">
-            I accept the communication policies
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          className="w-[328px] h-[55px] text-black bg-[#00FF99] font-bold rounded-[10px] mt-3 hover:bg-[#00e68a] active:bg-[#00cc7a] disabled:bg-[#4d4d4d] disabled:text-[#999999]"
-          disabled={!email || !password || !acceptPolicy}>
-          Sign up
-        </button>
+        </label>
+        {errors.accept && <p className="mt-1.5 text-xs text-red-300">{errors.accept}</p>}
+        <SubmitButton loading={loading}>{loading ? "Creating account..." : "Create account"}</SubmitButton>
       </form>
-
-     {/*  <div className="flex items-center gap-[10px] my-[10px]">
-        <div className="w-[84px] border border-[#474747]"></div>
-        <p className="text-base text-[#999999] font-normal">or continue with</p>
-        <div className="w-[84px] border border-[#474747]"></div>
-      </div>
-
-      <div className="flex items-center gap-[47px]">
-        <Image
-          src="/authentication/google.png"
-          alt="Google"
-          width={40}
-          height={40}
-        />
-        <Image
-          src="/authentication/facebook.png"
-          alt="Facebook"
-          width={40}
-          height={40}
-        />
-        <Image
-          src="/authentication/apple.png"
-          alt="Apple"
-          width={55}
-          height={55}
-        />
-      </div> */}
-
-      <p className="text-base text-[#5A5A5A] font-medium my-[10px]">
-        Already have an account?
-        <Link href="/sign-in" className="text-[#05955C]">
-          {" "}
-          Sign in
-        </Link>
+      <p className="mt-6 text-center text-sm text-zinc-400">
+        Already have an account?{" "}
+        <Link href="/sign-in" className="font-semibold text-[#00FF99] hover:underline">Sign in</Link>
       </p>
-    </div>
+    </>
   );
-};
-
-export default SignUpForm;
+}

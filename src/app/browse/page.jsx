@@ -2,6 +2,7 @@
 "use client";
 
 // library imports
+import LazyMount from "../../components/common/LazyMount";
 import React, { useState, useEffect, useRef } from "react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -65,21 +66,25 @@ export default function Browse() {
           addtionalclass="common-slider-w"
           addtionalclass2="custum-w-slider"
         />
-        {collections.map((collection, index) => (
-          <React.Fragment key={index}>
-            <CommonSlider
-              sliderImages={collection.items}
-              number={4.5}
-              text={collection.name}
-              addtionalclass="common-slider-w"
-              addtionalclass2="custum-w-slider"
-            />
-            {/* {index === 2 && (
-              <TrendingStar trendingStars={trendingStars} />
-            )} */}
-            {index === 2 && <StillSearching />}
-          </React.Fragment>
-        ))}
+        {collections.map((collection, index) => {
+          const row = (
+            <>
+              <CommonSlider
+                sliderImages={collection.items}
+                number={4.5}
+                text={collection.name}
+                addtionalclass="common-slider-w"
+                addtionalclass2="custum-w-slider"
+              />
+              {index === 2 && <StillSearching />}
+            </>
+          );
+          return (
+            <React.Fragment key={index}>
+              {index === 0 ? row : <LazyMount minHeight={340}>{row}</LazyMount>}
+            </React.Fragment>
+          );
+        })}
       </div>
     </>
   );

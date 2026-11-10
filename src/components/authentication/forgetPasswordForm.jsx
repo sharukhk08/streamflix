@@ -1,54 +1,73 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Link from "next/link";
+import { FiMail, FiArrowLeft } from "react-icons/fi";
 import { forgotPasswordAction } from "../../api/authentication/forgotPassword";
+import { Heading, Alert, Field, SubmitButton, isEmail, IS_DEMO } from "./ui";
 
-const ForgetPassword = () => {
-  const [email, setEmail] = React.useState('');
+export default function ForgetPassword() {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isEmail(email)) {
+      setError("Enter the email address of your account.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    if (IS_DEMO) {
+      setTimeout(() => {
+        setLoading(false);
+        setSent(true);
+      }, 700);
+      return;
+    }
+    try {
+      const fd = new FormData();
+      fd.set("email", email.trim());
+      await forgotPasswordAction(fd);
+      setSent(true);
+    } catch {
+      setError("We could not send the reset link. Please try again.");
+    }
+    setLoading(false);
+  };
+
+  if (sent) {
+    return (
+      <>
+        <Heading title="Check your email" subtitle="Password reset instructions" />
+        <Alert type="success">
+          If an account exists for <strong>{email.trim()}</strong>, a reset link is on its way.
+          {IS_DEMO && " (Demo mode: no email is really sent.)"}
+        </Alert>
+        {IS_DEMO && (
+          <Link href="/reset-password" className="flex h-12 w-full items-center justify-center rounded-xl bg-[#00FF99] font-semibold text-black hover:bg-[#00e68a]">
+            Continue to reset your password
+          </Link>
+        )}
+        <p className="mt-6 text-center text-sm text-zinc-400">
+          <Link href="/sign-in" className="inline-flex items-center gap-1.5 font-semibold text-[#00FF99] hover:underline"><FiArrowLeft /> Back to sign in</Link>
+        </p>
+      </>
+    );
+  }
 
   return (
-    <div className="w-full lg:w-full flex flex-col items-center gap-[10px]">
-      <h1
-        className="text-[36px] font-extrabold px-8 relative"
-        style={{
-          background:
-            "linear-gradient(90deg, rgba(86, 72, 251, 1) 0%, rgba(0, 255, 153, 1) 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-        }}
-      >
-        Forgot Password
-      </h1>
-      <p className="text-white text-center font-semibold leading-snug text-xl -mt-2">
-        Enter your email to reset your password
-      </p>
-
-      <form className="flex flex-col gap-[10px] my-[12px]">
-        <input
-          className="w-[328px] h-[50px] rounded-[10px] px-[5px] bg-zinc-900 text-[16px] text-white outline-none pl-[14px]"
-          name="email"
-          placeholder="you@example.com"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button
-          formAction={forgotPasswordAction}
-          className="w-[328px] h-[55px] text-black bg-[#00FF99] font-bold rounded-[10px] mt-3 hover:bg-[#00e68a] active:bg-[#00cc7a] disabled:bg-[#4d4d4d] disabled:text-[#999999]"
-          disabled={!email}
-        >
-          Reset Password
-        </button>
+    <>
+      <Heading title="Forgot your password?" subtitle="Enter your email and we will send you a reset link." />
+      {error && <Alert type="error">{error}</Alert>}
+      <form onSubmit={handleSubmit} noValidate>
+        <Field id="email" label="Email" icon={<FiMail />} type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <SubmitButton loading={loading}>{loading ? "Sending..." : "Send reset link"}</SubmitButton>
       </form>
-
-      <p className="text-base text-[#5A5A5A] font-medium my-[10px]">
-        Already have an account?
-        <Link href="/sign-in" className="text-[#05955C]">
-          {" "}
-          Sign in
-        </Link>
+      <p className="mt-6 text-center text-sm text-zinc-400">
+        <Link href="/sign-in" className="inline-flex items-center gap-1.5 font-semibold text-[#00FF99] hover:underline"><FiArrowLeft /> Back to sign in</Link>
       </p>
-    </div>
+    </>
   );
-};
-
-export default ForgetPassword;
+}

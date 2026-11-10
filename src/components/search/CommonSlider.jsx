@@ -161,7 +161,7 @@ const CommonSlider = ({
                 <div className="rounded-[10px] overflow-hidden">
                   <Image
                     className="w-full h-auto object-cover"
-                    unoptimized
+                    sizes="(max-width: 768px) 90vw, 26vw"
                     width={381}
                     height={240}
                     src={obj.src}

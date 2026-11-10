@@ -93,6 +93,7 @@ const Hero = () => {
             <SwiperSlide key={content.id}>
               <HeroSlider
                 obj={content}
+                isActive={index === activeIndex}
                 audioOn={audioOn && index === activeIndex}
                 handleAudioToggle={handleAudioToggle}
               />

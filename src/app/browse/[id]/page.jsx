@@ -178,7 +178,7 @@ export default function BrowseContentPage() {
           </button>
           <div className="relative h-screen w-full">
             <Image
-              src={image_url || "/images/landingpage-1.png"}
+              src={image_url || "/images/landingpage-1.jpg"}
               alt={title}
               layout="fill"
               objectFit="cover"

@@ -11,7 +11,7 @@ import {
   SeriesratingIcon,
 } from "./common/Icons";
 
-const HeroSlider = ({ obj, audioOn, handleAudioToggle }) => {
+const HeroSlider = ({ obj, audioOn, handleAudioToggle, isActive = true}) => {
   const router = useRouter();
   const videoRef = useRef(null);
   const [isVideoReady, setIsVideoReady] = useState(false);
@@ -21,13 +21,14 @@ const HeroSlider = ({ obj, audioOn, handleAudioToggle }) => {
       ? obj.episodes[0].video_id
       : obj.video_id;
 
+    if (!isActive) return undefined;
     let detach = () => {};
     if (videoRef.current && videoId) {
       attachVideo(videoRef.current, videoId, { autoplay: true }).then((d) => { detach = d; });
     }
     setIsVideoReady(true);
     return () => detach();
-  }, [obj]);
+  }, [obj, isActive]);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -44,6 +45,7 @@ const HeroSlider = ({ obj, audioOn, handleAudioToggle }) => {
       <article className="relative duration-300 group lg:group-hover:disabled video-layer overflow-hidden">
         <video
           ref={videoRef}
+          preload="metadata"
           poster={obj.image_url?.startsWith("/demo/") ? obj.image_url.replace("/demo/poster-", "/demo/backdrop-") : undefined}
           className="rounded-xl md:rounded-3xl xl:rounded-[50px] relative w-full object-cover xl:h-[75vh]"
           playsInline
