@@ -9,7 +9,7 @@ import "swiper/css/pagination";
 import Header from "../../../components/content/common/Header";
 import StillSearching from "../../../components/my-list/StillSearching";
 import CommonSlider from "../../../components/my-list/CommonSlider";
-import { getContentWatchlist } from "../../../api/content/getcontentwatchlist";
+import { getContentWatchlist } from "../../../lib/watchlistApi";
 import LoadingScreen from "../../../components/loading/loadingScreen";
 
 export default function Watchlist() {

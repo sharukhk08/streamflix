@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { go } from "../../../lib/nav";
 import { useParams } from "next/navigation";
 import { getSpecificContent } from "../../../api/content/getspecificcontent";
+import { getWatchlist, addToWatchlist, removeFromWatchlist } from "../../../lib/watchlistApi";
 import CommonSlider from "../../../components/player/CommonSlider";
 import LoadingScreen from "../../../components/loading/loadingScreen";
 import { useRouter } from "next/navigation";
@@ -49,6 +51,53 @@ export default function BrowseContentPage() {
     fetchData();
   }, [fetchData]);
 
+  // Track the window width so the page switches layout when the window is resized.
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof window === "undefined" ? 1200 : window.innerWidth
+  );
+  useEffect(() => {
+    const onResize = () => setViewportWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Watchlist button state
+  const [inList, setInList] = useState(false);
+  const [listBusy, setListBusy] = useState(false);
+  const [toast, setToast] = useState("");
+  const currentProfileId = () => {
+    try {
+      return JSON.parse(localStorage.getItem("selectedProfile"))?.profile_id || null;
+    } catch {
+      return null;
+    }
+  };
+  useEffect(() => {
+    const pid = currentProfileId();
+    if (!pid || !id) return;
+    getWatchlist(pid).then((r) => {
+      if (r?.success) setInList(r.data.some((x) => x.content_id === id));
+    });
+  }, [id]);
+  const toggleWatchlist = async () => {
+    const pid = currentProfileId();
+    if (!pid) {
+      go(router, "/profile");
+      return;
+    }
+    if (listBusy) return;
+    setListBusy(true);
+    const res = inList ? await removeFromWatchlist(id, pid) : await addToWatchlist(id, pid);
+    if (res?.success) {
+      setToast(inList ? "Removed from your watchlist" : "Added to your watchlist");
+      setInList(!inList);
+    } else {
+      setToast("Could not update your watchlist");
+    }
+    setListBusy(false);
+    setTimeout(() => setToast(""), 2200);
+  };
+
   useEffect(() => {
     // Function to handle click outside the slider
     const handleClickOutside = (event) => {
@@ -87,7 +136,7 @@ export default function BrowseContentPage() {
     video_id,
   } = specificContent;
 
-  const isSmallScreen = window.innerWidth < 768;
+  const isSmallScreen = viewportWidth < 1024;
 
   const handleWatchNowClick = () => {
     const first = type === "series" && episodes?.length ? episodes[0] : null;
@@ -101,7 +150,7 @@ export default function BrowseContentPage() {
     };
 
     sessionStorage.setItem("videoData", JSON.stringify(contentData));
-    router.push(`/watch/${id}?trackId=${startVideo}`);
+    go(router, `/watch/${id}?trackId=${startVideo}`);
   };
 
   const handleSliderClick = () => {
@@ -114,6 +163,11 @@ export default function BrowseContentPage() {
 
   return (
     <>
+      {toast && (
+        <div role="status" className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 rounded-full bg-white px-5 py-2 text-sm font-medium text-black shadow-xl lg:bottom-8">
+          {toast}
+        </div>
+      )}
       {isSmallScreen ? (
         <div className="relative min-h-screen flex flex-col overflow-x-hidden">
           <button
@@ -124,7 +178,7 @@ export default function BrowseContentPage() {
           </button>
           <div className="relative h-screen w-full">
             <Image
-              src="/images/landingpage-1.png"
+              src={image_url || "/images/landingpage-1.png"}
               alt={title}
               layout="fill"
               objectFit="cover"
@@ -173,13 +227,21 @@ export default function BrowseContentPage() {
                   </span>
                 </div>
               </div>
+              {description && (
+                <p className="text-center text-sm leading-relaxed text-zinc-300 line-clamp-3">{description}</p>
+              )}
               <button
                 onClick={handleWatchNowClick}
                 className="bg-[#00FF99] text-black font-semibold text-base w-full py-3 rounded">
                 Watch now
               </button>
               <button
-                onClick={() => router.push("/browse")}
+                onClick={toggleWatchlist}
+                className="mt-3 w-full rounded border border-white/30 py-3 text-base font-medium text-white">
+                {inList ? "In your watchlist (tap to remove)" : "Add to watchlist"}
+              </button>
+              <button
+                onClick={() => go(router, "/browse")}
                 className="mt-3 w-full rounded border border-white/30 py-3 text-base font-medium text-white">
                 Explore more titles
               </button>
@@ -199,7 +261,7 @@ export default function BrowseContentPage() {
               }}
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/45 to-transparent" />
           <div className="relative z-10 flex-grow p-6 text-white">
             <div className="z-10">
               <button
@@ -263,8 +325,11 @@ export default function BrowseContentPage() {
                     <PlayBtnIcon />
                     Watch Now
                   </button>
-                  <button className="flex items-center group justify-between gap-3 px-2.5 py-2 md:px-6 lg:px-[30px] md:py-3.5 lg:py-[17px] font-semibold tracking-wide text-xs md:text-sm xl:text-base text-white bg-transparent border border-white/20 rounded-xl md:rounded-[48px]">
-                    Watchlist
+                  <button
+                    onClick={toggleWatchlist}
+                    aria-pressed={inList}
+                    className={`flex items-center group justify-between gap-3 px-2.5 py-2 md:px-6 lg:px-[30px] md:py-3.5 lg:py-[17px] font-semibold tracking-wide text-xs md:text-sm xl:text-base rounded-xl md:rounded-[48px] border transition ${inList ? "text-[#00FF99] border-[#00FF99] bg-[#00FF99]/10" : "text-white bg-transparent border-white/20 hover:border-white/50"}`}>
+                    {inList ? "In Watchlist" : "Watchlist"}
                     <WatchlistIcon />
                   </button>
                 </div>

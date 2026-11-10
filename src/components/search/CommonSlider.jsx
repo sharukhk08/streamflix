@@ -1,14 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { go } from "../../lib/nav";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Navigation, Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
 import { PlayBtnIcon2, AddIcon2, CheckIcon, RemoveIcon } from "../content/common/Icons";
 import { useRouter } from "next/navigation";
 
-import { addToWatchlist } from "../../api/content/addtowatchlist";
-import { getWatchlist } from "../../api/content/getwatchlist.js";
-import { removeFromWatchlist } from "../../api/content/removefromwatchlist";
+import { addToWatchlist, getWatchlist, removeFromWatchlist } from "../../lib/watchlistApi";
 
 const CommonSlider = ({
   number,
@@ -41,7 +40,7 @@ const CommonSlider = ({
   };
 
   const handlePlayClick = (id) => {
-    router.push(`/browse/${id}`);
+    go(router, `/browse/${id}`);
   };
 
   const handleAddToWatchlist = async (contentId) => {

@@ -50,3 +50,9 @@ TODO: own Supabase project + dummy data (database-schema.txt), deploy.
 - Account page works in demo (client shim in utils/supabase/client.ts); profile create/edit/delete via src/lib/profileApi.js (localStorage in demo). Fixed real bugs: supabase.auth.user() (removed API), deleteProfile arg, create form dropped language/maturity/kids, placeholder alert() on avatar edit, Teens/Mature same value.
 - Header: plus menu + bell menu work; phone bottom tab bar (Home/Movies/Series/Watchlist/Search). Nav label "Watch now" -> "Home".
 - Watchlist and search results de-duplicated. Signout/forgot/reset password bypass in demo.
+
+## Round 3 (2026-11-10)
+- Live link https://streamflix-six-neon.vercel.app checked: 19/19 routes OK, headers OK, images OK, video plays on /watch; but in-page jump Watch now -> player stalled in one browser (fixed with src/lib/nav.js full-page fallback).
+- Watchlist button on film page now works (src/lib/watchlistApi.js, browser storage per profile in demo).
+- Film page: phone/tablet layout below 1024px (was 768, caused squeezed text), uses the film's own poster + description; brighter backdrops.
+- Terms/Privacy pages stack the sidebar on phones. Responsive sweep 375/768/1280: no horizontal overflow, no broken images.

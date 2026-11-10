@@ -1,6 +1,7 @@
 "use client";
 
 // library imports
+import { go } from "../../../lib/nav";
 import React, { useState, useEffect, useCallback } from "react";
 import { MdModeEdit, MdAdd } from "react-icons/md";
 import Image from "next/image";
@@ -70,7 +71,7 @@ export default function SelectProfile() {
       setSelectedProfile(index);
       localStorage.setItem("selectedProfile", JSON.stringify(profiles[index]));
 
-      router.push("/browse");
+      go(router, "/browse");
     }
   };
 

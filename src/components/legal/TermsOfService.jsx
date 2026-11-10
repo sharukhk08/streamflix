@@ -96,8 +96,8 @@ const TermsOfService = () => {
           StreamFlix Terms of Service
         </h1>
 
-        <div className="flex gap-8">
-          <aside className="w-1/4 flex-shrink-0">
+        <div className="flex flex-col gap-8 md:flex-row">
+          <aside className="w-full flex-shrink-0 md:w-1/4">
             <TableOfContents
               sections={sections.map((s) => s.title)}
               activeSection={activeSection}
@@ -105,7 +105,7 @@ const TermsOfService = () => {
             />
           </aside>
 
-          <main className="flex-grow">
+          <main className="min-w-0 flex-grow">
             <article className="space-y-12">
               {sections.map((section, index) => (
                 <section

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import { go } from "../../lib/nav";
 import { useRouter } from "next/navigation";
 import { attachVideo } from "../../lib/video";
 import {
@@ -35,7 +36,7 @@ const HeroSlider = ({ obj, audioOn, handleAudioToggle }) => {
   }, [audioOn, isVideoReady]);
 
   const handlePlayClick = (id) => {
-    router.push(`/browse/${id}`);
+    go(router, `/browse/${id}`);
   };
 
   return (
