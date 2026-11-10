@@ -321,7 +321,7 @@ export default function Video() {
           ref={videoRef}
           autoPlay
           poster="/demo/backdrop-1.jpg"
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 h-full w-full bg-black object-cover [@media(orientation:portrait)]:object-contain"
           controlsList="nodownload"
           disablePictureInPicture
           playsInline
