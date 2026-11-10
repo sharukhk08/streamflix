@@ -32,12 +32,6 @@ export default function Header() {
 
       {/* Navigation and Actions Section */}
       <div className="flex justify-end items-center font-medium gap-2 md:gap-4">
-        {/* Languages Option */}
-        <select className="text-sm custom-select cursor-pointer p-2 rounded-xl text-white bg-black border-2 border-gray-700 outline-none capitalize">
-          <option value="EN">en</option>
-          <option value="SP">sp</option>
-          <option value="CH">ch</option>
-        </select>
 
         {/* Dynamic Login/Sign Up Button */}
         <Link href={linkHref}>
